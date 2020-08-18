@@ -1,6 +1,6 @@
-use serde_json::json;
-use serde::{Deserialize, Serialize};
-use tide::Request;
+
+mod rest;
+use rest::system::{post2response, ping};
 
 #[async_std::main]
 async fn main() -> Result<(), std::io::Error> {
@@ -10,18 +10,4 @@ async fn main() -> Result<(), std::io::Error> {
     app.at("/ping").post(post2response);
     app.listen("127.0.0.1:8080").await?;
     Ok(())
-}
-
-async fn ping(_request: Request<()>) -> tide::Result<serde_json::Value> {
-    Ok(json!({"ok" : "pong"}))
-}
-
-async fn post2response(mut _request: Request<()>) -> tide::Result<serde_json::Value> {
-    let body: Ping = _request.body_json().await?;
-    Ok(json!(&body))
-}
-
-#[derive(Deserialize, Serialize)]
-struct Ping {
-    value: String,
 }
